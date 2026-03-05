@@ -61,7 +61,7 @@ async def run_agent_stream(logs_path: str, docs_path: str = None):
        - Services affected
        - Recommended immediate actions
        - Long-term fixes
-    5. Write the full incident report to 'output/incident_report.txt' using the report_writer tool.
+    5. Write the full incident report to '../output/incident_report.txt' using the report_writer tool.
     """
 
     if docs_path:
