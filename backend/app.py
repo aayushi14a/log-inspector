@@ -26,6 +26,9 @@ app = FastAPI(title="Log Inspector API")
 allowed_origins = [
     "http://localhost:5173",
     "http://localhost:3000",
+    "https://log-inspector.vercel.app",
+    "https://log-inspector-aayushi14as-projects.vercel.app",
+    "https://log-inspector-git-main-aayushi14as-projects.vercel.app",
 ]
 # Add production frontend URL from env if set
 frontend_url = os.getenv("FRONTEND_URL", "")
