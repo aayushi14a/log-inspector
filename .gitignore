@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.venv-1/
+venv/
+.vite/
+output/*.txt
+output/*.csv
+output/*.xlsx
+uploads/
+user_history/*.json
+!user_history/.gitkeep
+node_modules/
+dist/

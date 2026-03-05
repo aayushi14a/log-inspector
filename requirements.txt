@@ -1,0 +1,11 @@
+smolagents[toolkit]
+pandas
+openpyxl
+matplotlib
+seaborn
+python-dotenv
+huggingface_hub
+fastapi
+uvicorn[standard]
+python-multipart
+pip-system-certs
