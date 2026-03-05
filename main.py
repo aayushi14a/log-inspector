@@ -1,6 +1,9 @@
 import os
 import argparse
-import pip_system_certs  # Use Windows system certificate store (corporate proxy support)
+try:
+    import pip_system_certs  # noqa: corporate proxy support (Windows only)
+except ImportError:
+    pass
 from dotenv import load_dotenv
 from smolagents import CodeAgent, InferenceClientModel
 from tools.log_loader import LogLoaderTool

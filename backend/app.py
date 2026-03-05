@@ -6,7 +6,10 @@ import asyncio
 from datetime import datetime
 from pathlib import Path
 
-import pip_system_certs
+try:
+    import pip_system_certs  # noqa: corporate proxy support (Windows only)
+except ImportError:
+    pass
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
