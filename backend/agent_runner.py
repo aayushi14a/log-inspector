@@ -45,7 +45,7 @@ async def run_agent_stream(logs_path: str, docs_path: str = None):
     task = f"""
     You are a Site Reliability Engineer (SRE) investigating a production outage.
 
-        Analyze the service logs and identify:
+        Analyze the service logs from '{logs_path}' and identify:
 
         1. The earliest failure event in the timeline.
         2. The likely root cause of the incident.
