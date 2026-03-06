@@ -43,25 +43,29 @@ async def run_agent_stream(logs_path: str, docs_path: str = None):
 
     # Build task
     task = f"""
-    You are an SRE engineer at Intuit. Analyze the production service logs.
+    You are a Site Reliability Engineer (SRE) investigating a production outage.
 
-    1. Load the log file at '{logs_path}' using the log_loader tool.
-    2. Read the full CSV into a pandas DataFrame for deeper analysis.
-    3. Perform a root cause analysis:
-       a. What are the CRITICAL and ERROR events? Group them by service and error_code.
-       b. Are there cascading failures? (e.g., one service failure causing others)
-       c. Which services have the highest error rates?
-       d. Identify any slow requests (response_time_ms > 5000) and their root cause.
-       e. Are there any security concerns in the logs?
-       f. What is the timeline of incidents — which happened first, what followed?
-    4. Produce an incident report with:
-       - Executive Summary
-       - Timeline of events
-       - Top 5 most critical issues with root cause
-       - Services affected
-       - Recommended immediate actions
-       - Long-term fixes
-    5. Write the full incident report to '../output/incident_report.txt' using the report_writer tool.
+        Analyze the service logs and identify:
+
+        1. The earliest failure event in the timeline.
+        2. The likely root cause of the incident.
+        3. Cascading failures that occurred in other services.
+        4. The services most impacted by the incident.
+        5. Any slow requests or performance anomalies.
+
+        Reconstruct the failure sequence in chronological order.
+
+        Focus on causal relationships between services rather than simply listing errors.
+
+        The incident report must include:
+
+        - Executive Summary
+        - Root Cause Analysis
+        - Failure Timeline
+        - Cascading Failures
+        - Services Impacted
+        - Recommended Immediate Actions
+        - Long-term Preventive Fixes
     """
 
     if docs_path:
