@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 try:
-    import pip_system_certs  # noqa: corporate proxy support (Windows only)
+    import pip_system_certs 
 except ImportError:
     pass
 from dotenv import load_dotenv
@@ -167,10 +167,16 @@ async def analyze(logs_path: str, email: str = "", docs_path: str = None):
 @app.get("/api/report/download")
 async def download_report():
     report_path = OUTPUT_DIR / "incident_report.txt"
-    if not report_path.exists():
+    # Fallback: agent may have written to backend/report/ instead
+    fallback_path = Path(__file__).resolve().parent / "report" / "incident_report.txt"
+    if report_path.exists():
+        path = report_path
+    elif fallback_path.exists():
+        path = fallback_path
+    else:
         raise HTTPException(404, "Report not yet generated")
     return FileResponse(
-        report_path,
+        path,
         media_type="text/plain",
         filename="incident_report.txt",
     )
@@ -179,9 +185,14 @@ async def download_report():
 @app.get("/api/report/content")
 async def get_report_content():
     report_path = OUTPUT_DIR / "incident_report.txt"
-    if not report_path.exists():
+    fallback_path = Path(__file__).resolve().parent / "report" / "incident_report.txt"
+    if report_path.exists():
+        path = report_path
+    elif fallback_path.exists():
+        path = fallback_path
+    else:
         raise HTTPException(404, "Report not yet generated")
-    return {"content": report_path.read_text(encoding="utf-8")}
+    return {"content": path.read_text(encoding="utf-8")}
 
 
 if __name__ == "__main__":

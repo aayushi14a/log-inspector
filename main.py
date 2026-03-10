@@ -52,37 +52,25 @@ if __name__ == "__main__":
     # ── Build the task ────────────────────────────────────────────────────────
     # Base task — always runs
     task = f"""
-    You are an SRE engineer at Intuit. Analyze the production service logs.
+    You are an SRE engineer. Analyze the log file and write an incident report.
 
-    1. Load the log file at '{args.logs}' using the log_loader tool.
-    2. Read the full CSV into a pandas DataFrame for deeper analysis.
-    3. Perform a root cause analysis:
-       a. What are the CRITICAL and ERROR events? Group them by service and error_code.
-       b. Are there cascading failures? (e.g., one service failure causing others)
-       c. Which services have the highest error rates?
-       d. Identify any slow requests (response_time_ms > 5000) and their root cause.
-       e. Are there any security concerns in the logs?
-       f. What is the timeline of incidents — which happened first, what followed?
-    4. Produce an incident report with:
+    Step 1: Use the log_loader tool to load '{args.logs}'.
+    Step 2: From the output, identify the root cause (the first error) and any cascading failures.
+    Step 3: Write an incident report covering:
        - Executive Summary
-       - Timeline of events
-       - Top 5 most critical issues with root cause
-       - Services affected
-       - Recommended immediate actions
-       - Long-term fixes
-    5. Write the full incident report to 'output/incident_report.txt' using the report_writer tool.
+       - Root Cause
+       - Timeline of errors
+       - Affected Services
+       - Cascading Failures
+       - Immediate Actions
+       - Long-term Fixes
+    Step 4: Use the report_writer tool to save the report to 'output/incident_report.txt'.
     """
 
     # If --docs is provided, inject the reference document into the task
     if args.docs:
         task += f"""
-    IMPORTANT — Reference Document:
-    A best practices / runbook document has been provided at: '{args.docs}'
-    6. Use the doc_reader tool to read '{args.docs}' BEFORE writing your recommendations.
-    7. Base your "Recommended immediate actions" and "Long-term fixes" on the practices
-       described in that document. Quote specific sections where relevant.
-    8. If the document contains fix procedures for specific error codes found in the logs,
-       include those exact steps in the report.
+    Also: Read '{args.docs}' using the doc_reader tool and use it to improve your recommendations.
     """
         print(f"[INFO] Reference document loaded: {args.docs}")
     else:

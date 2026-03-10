@@ -275,15 +275,20 @@ function renderSection(title, body) {
     const rows = lines
       .filter(l => /^\d{4}-\d{2}-\d{2}/.test(l))
       .map(l => {
-        const parts = l.split(',').map(s => s.trim())
+        // Support both "ts, service, level - msg" and "ts, service, code"
+        const firstComma = l.indexOf(',')
+        const secondComma = l.indexOf(',', firstComma + 1)
+        const ts = firstComma > 0 ? l.slice(0, firstComma).trim() : l
+        const svc = secondComma > 0 ? l.slice(firstComma + 1, secondComma).trim() : ''
+        const detail = secondComma > 0 ? l.slice(secondComma + 1).trim() : ''
         return [
-          <span className="font-mono text-xs text-gray-400">{parts[0] || ''}</span>,
-          <span className="text-gray-200">{parts[1] || ''}</span>,
-          <SeverityChip text={parts[2] || ''} />,
+          <span className="font-mono text-xs text-gray-400">{ts}</span>,
+          <span className="text-gray-200">{svc}</span>,
+          <SeverityChip text={detail || '—'} />,
         ]
       })
     return rows.length > 0
-      ? <ReportTable headers={['Timestamp', 'Service', 'Error Code']} rows={rows} />
+      ? <ReportTable headers={['Timestamp', 'Service', 'Details']} rows={rows} />
       : <p className="text-sm text-gray-400">{body}</p>
   }
 
@@ -538,11 +543,10 @@ export default function Dashboard({ user, onLogout }) {
     }
   }
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     try {
-      const res = await fetch(`${API_BASE}/api/report/download`)
-      if (!res.ok) throw new Error('Report not available')
-      const blob = await res.blob()
+      if (!summary) throw new Error('No report to download')
+      const blob = new Blob([summary], { type: 'text/plain' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url

@@ -1,185 +1,25 @@
-timestamp,level,service,host,request_id,message,response_time_ms,status_code,user_id,error_code
-2024-03-12 06:00:01.112,INFO,nginx-ingress,edge-lb-01,req-000001,GET /healthz 200,2,200,,
-2024-03-12 06:00:01.200,INFO,nginx-ingress,edge-lb-02,req-000002,GET /healthz 200,3,200,,
-2024-03-12 06:00:02.001,INFO,api-gateway,prod-gw-01,req-100001,Incoming POST /v2/auth/login from 10.0.44.12,12,200,usr-20001,
-2024-03-12 06:00:02.050,INFO,auth-service,prod-auth-01,req-100001,Authenticating user usr-20001 via OAuth2,85,200,usr-20001,
-2024-03-12 06:00:02.140,INFO,auth-service,prod-auth-01,req-100001,OAuth2 token issued successfully. TTL=3600s,5,200,usr-20001,
-2024-03-12 06:00:02.300,INFO,session-service,prod-sess-01,req-100001,Session created sid=sess-8a7b3c,8,201,usr-20001,
-2024-03-12 06:00:03.000,INFO,api-gateway,prod-gw-02,req-100002,Incoming GET /v2/dashboard from 10.0.44.15,10,200,usr-20002,
-2024-03-12 06:00:03.100,INFO,user-service,prod-usr-01,req-100002,Fetching user profile for usr-20002,45,200,usr-20002,
-2024-03-12 06:00:03.200,WARN,user-service,prod-usr-01,req-100002,Profile cache miss - querying primary DB,320,,usr-20002,CACHE_MISS_USR
-2024-03-12 06:00:03.600,INFO,user-service,prod-usr-01,req-100002,Profile loaded from DB in 400ms,400,200,usr-20002,
-2024-03-12 06:00:04.000,INFO,api-gateway,prod-gw-01,req-100003,Incoming POST /v2/orders/create from 10.0.44.20,15,200,usr-20003,
-2024-03-12 06:00:04.100,INFO,order-service,prod-ord-01,req-100003,Validating order payload - 3 items,55,200,usr-20003,
-2024-03-12 06:00:04.200,INFO,inventory-service,prod-inv-01,req-100003,Checking stock for SKU-1001 SKU-1002 SKU-1003,120,200,usr-20003,
-2024-03-12 06:00:04.350,WARN,inventory-service,prod-inv-01,req-100003,SKU-1002 low stock warning: 3 units remaining,0,,usr-20003,INV_LOW_STOCK
-2024-03-12 06:00:04.400,INFO,inventory-service,prod-inv-01,req-100003,Stock reserved for order ord-50001,30,200,usr-20003,
-2024-03-12 06:00:04.500,INFO,pricing-service,prod-price-01,req-100003,Calculating price for 3 items with promo SPRING24,80,200,usr-20003,
-2024-03-12 06:00:04.600,INFO,order-service,prod-ord-01,req-100003,Order ord-50001 created successfully. Total: $247.99,10,201,usr-20003,
-2024-03-12 06:00:05.000,INFO,api-gateway,prod-gw-02,req-100004,Incoming POST /v2/payments/charge from 10.0.44.20,12,200,usr-20003,
-2024-03-12 06:00:05.100,INFO,payment-service,prod-pay-01,req-100004,Processing payment for ord-50001. Amount: $247.99,50,200,usr-20003,
-2024-03-12 06:00:05.200,INFO,payment-service,prod-pay-01,req-100004,Calling Stripe API for card ending 4242,800,200,usr-20003,
-2024-03-12 06:00:06.050,INFO,payment-service,prod-pay-01,req-100004,Payment successful. Stripe txn_id=txn_3aB7kQ,5,200,usr-20003,
-2024-03-12 06:00:06.100,INFO,notification-service,prod-notif-01,req-100004,Sending order confirmation email to usr-20003,200,200,usr-20003,
-2024-03-12 06:00:06.500,INFO,api-gateway,prod-gw-01,req-100005,Incoming GET /v2/products/search?q=laptop from 10.0.44.30,10,200,usr-20010,
-2024-03-12 06:00:06.600,INFO,search-service,prod-search-01,req-100005,Elasticsearch query: laptop. Hits: 342,180,200,usr-20010,
-2024-03-12 06:00:06.800,INFO,search-service,prod-search-01,req-100005,Results ranked and returned. Page 1/35,20,200,usr-20010,
-2024-03-12 06:00:07.000,INFO,api-gateway,prod-gw-02,req-100006,Incoming GET /v2/recommendations/usr-20010 from 10.0.44.30,8,200,usr-20010,
-2024-03-12 06:00:07.100,INFO,recommendation-engine,prod-rec-01,req-100006,Loading ML model v3.2 for user recommendations,450,200,usr-20010,
-2024-03-12 06:00:07.600,INFO,recommendation-engine,prod-rec-01,req-100006,Generated 10 recommendations in 500ms,500,200,usr-20010,
-2024-03-12 06:00:08.000,ERROR,api-gateway,prod-gw-01,req-100007,Incoming POST /v2/payments/charge from 10.0.44.55 - upstream timeout,30005,504,usr-20050,GW_TIMEOUT_001
-2024-03-12 06:00:08.100,ERROR,payment-service,prod-pay-02,req-100007,Stripe API connection timeout after 30s,30002,504,usr-20050,PAY_STRIPE_TIMEOUT
-2024-03-12 06:00:08.110,ERROR,payment-service,prod-pay-02,req-100007,Retry 1/3: Stripe API - connection refused,30001,504,usr-20050,PAY_STRIPE_TIMEOUT
-2024-03-12 06:00:08.120,ERROR,payment-service,prod-pay-02,req-100007,Retry 2/3: Stripe API - connection refused,30001,504,usr-20050,PAY_STRIPE_TIMEOUT
-2024-03-12 06:00:08.130,CRITICAL,payment-service,prod-pay-02,req-100007,Payment failed after 3 retries. Circuit breaker OPEN for Stripe.,90005,504,usr-20050,PAY_CB_OPEN
-2024-03-12 06:00:08.200,ERROR,order-service,prod-ord-02,req-100007,Order ord-50002 payment failed - rolling back inventory reservation,500,500,usr-20050,ORD_PAY_FAIL
-2024-03-12 06:00:08.300,WARN,inventory-service,prod-inv-01,req-100007,Releasing reserved stock for ord-50002: SKU-2001 x2,50,,usr-20050,INV_RELEASE
-2024-03-12 06:00:08.400,ERROR,notification-service,prod-notif-01,req-100007,Failed to send payment failure email - SMTP connection refused,3500,500,usr-20050,NOTIF_SMTP_FAIL
-2024-03-12 06:00:08.410,ERROR,notification-service,prod-notif-01,req-100007,smtp.internal.corp returned: 421 Service temporarily unavailable,0,500,usr-20050,NOTIF_SMTP_FAIL
-2024-03-12 06:00:09.000,INFO,api-gateway,prod-gw-01,req-100008,Incoming GET /v2/orders/history from 10.0.44.12,10,200,usr-20001,
-2024-03-12 06:00:09.100,INFO,order-service,prod-ord-01,req-100008,Fetching order history for usr-20001. Count: 47 orders,350,200,usr-20001,
-2024-03-12 06:00:09.500,WARN,order-service,prod-ord-01,req-100008,Slow query: SELECT * FROM orders WHERE user_id=usr-20001 took 340ms,340,,usr-20001,DB_SLOW_QUERY
-2024-03-12 06:00:10.000,INFO,api-gateway,prod-gw-02,req-100009,Incoming POST /v2/auth/login from 203.0.113.99,12,200,usr-30001,
-2024-03-12 06:00:10.100,WARN,auth-service,prod-auth-02,req-100009,Failed login attempt 4/5 for usr-30001 from IP 203.0.113.99,15,401,usr-30001,AUTH_FAIL_ATTEMPT
-2024-03-12 06:00:10.500,INFO,api-gateway,prod-gw-02,req-100010,Incoming POST /v2/auth/login from 203.0.113.99,12,200,usr-30001,
-2024-03-12 06:00:10.600,WARN,auth-service,prod-auth-02,req-100010,Failed login attempt 5/5 for usr-30001 from IP 203.0.113.99,10,401,usr-30001,AUTH_FAIL_ATTEMPT
-2024-03-12 06:00:10.610,WARN,auth-service,prod-auth-02,req-100010,Account usr-30001 LOCKED - brute force protection triggered,5,423,usr-30001,AUTH_ACCT_LOCKED
-2024-03-12 06:00:10.620,INFO,security-service,prod-sec-01,req-100010,Brute force alert: IP 203.0.113.99 targeting usr-30001. Added to watchlist.,20,,usr-30001,SEC_BRUTE_FORCE
-2024-03-12 06:00:11.000,INFO,api-gateway,prod-gw-01,req-100011,Incoming POST /v2/uploads/document from 10.0.44.70,15,200,usr-20060,
-2024-03-12 06:00:11.100,INFO,upload-service,prod-upload-01,req-100011,Receiving file: tax_return_2023.pdf (14.2MB),2000,200,usr-20060,
-2024-03-12 06:00:11.200,INFO,upload-service,prod-upload-01,req-100011,Virus scan started on tax_return_2023.pdf,500,,usr-20060,
-2024-03-12 06:00:11.800,INFO,upload-service,prod-upload-01,req-100011,Virus scan clean. Uploading to S3 bucket doc-store-prod,800,200,usr-20060,
-2024-03-12 06:00:12.700,INFO,upload-service,prod-upload-01,req-100011,Upload complete. S3 key: docs/usr-20060/tax_return_2023.pdf,100,201,usr-20060,
-2024-03-12 06:00:13.000,INFO,api-gateway,prod-gw-02,req-100012,Incoming GET /v2/notifications/unread from 10.0.44.12,8,200,usr-20001,
-2024-03-12 06:00:13.100,INFO,notification-service,prod-notif-02,req-100012,Fetching unread notifications for usr-20001: 5 items,45,200,usr-20001,
-2024-03-12 06:00:14.000,CRITICAL,database-monitor,prod-db-primary,req-system,PostgreSQL replication lag at 52 seconds (threshold: 10s),0,,system,DB_REPL_LAG_CRIT
-2024-03-12 06:00:14.010,CRITICAL,database-monitor,prod-db-primary,req-system,Long-running query detected: PID 4892 running for 180s - possible lock contention,0,,system,DB_LONGQUERY_CRIT
-2024-03-12 06:00:14.020,WARN,database-monitor,prod-db-primary,req-system,Killing PID 4892 to resolve lock contention,50,,system,DB_KILL_QUERY
-2024-03-12 06:00:14.100,WARN,database-monitor,prod-db-primary,req-system,Replication lag recovering: 52s -> 35s after query kill,0,,system,DB_REPL_RECOVERING
-2024-03-12 06:00:15.000,INFO,api-gateway,prod-gw-01,req-100013,Incoming POST /v2/reports/generate from 10.0.44.80,10,200,usr-20070,
-2024-03-12 06:00:15.100,INFO,reporting-service,prod-rpt-01,req-100013,Starting report generation: Q1 Financial Summary,100,,usr-20070,
-2024-03-12 06:00:15.200,WARN,reporting-service,prod-rpt-01,req-100013,Large dataset: fetching 4.7M rows from transactions table,0,,usr-20070,RPT_LARGE_DATASET
-2024-03-12 06:00:15.300,WARN,reporting-service,prod-rpt-01,req-100013,Memory usage at 78% during aggregation,8500,,usr-20070,RPT_HIGH_MEM
-2024-03-12 06:00:24.000,WARN,reporting-service,prod-rpt-01,req-100013,Memory usage at 91% - approaching OOM threshold,17500,,usr-20070,RPT_OOM_WARN
-2024-03-12 06:00:28.000,ERROR,reporting-service,prod-rpt-01,req-100013,Report generation failed - java.lang.OutOfMemoryError: Java heap space,25000,500,usr-20070,RPT_OOM_CRASH
-2024-03-12 06:00:28.010,ERROR,reporting-service,prod-rpt-01,req-100013,at com.corp.reporting.AggregationEngine.aggregate(AggregationEngine.java:341),0,500,usr-20070,RPT_OOM_CRASH
-2024-03-12 06:00:28.020,WARN,reporting-service,prod-rpt-01,req-100013,Pod restarting due to OOM kill. Restart count: 3 in last hour,0,,usr-20070,RPT_POD_RESTART
-2024-03-12 06:00:29.000,INFO,kubernetes-controller,k8s-ctrl-01,req-system,Pod prod-rpt-01 restarted. Status: Running. Restarts: 3,500,,system,
-2024-03-12 06:00:30.000,INFO,api-gateway,prod-gw-02,req-100014,Incoming GET /v2/products/SKU-5001 from 10.0.44.90,8,200,usr-20080,
-2024-03-12 06:00:30.100,INFO,product-service,prod-prod-01,req-100014,Product lookup: SKU-5001,25,200,usr-20080,
-2024-03-12 06:00:30.200,INFO,cache-service,prod-cache-01,req-100014,Redis GET product:SKU-5001 - HIT,2,200,usr-20080,
-2024-03-12 06:00:31.000,INFO,api-gateway,prod-gw-01,req-100015,Incoming POST /v2/cart/add from 10.0.44.90,10,200,usr-20080,
-2024-03-12 06:00:31.100,INFO,cart-service,prod-cart-01,req-100015,Added SKU-5001 x1 to cart cart-20080. Items: 3,35,200,usr-20080,
-2024-03-12 06:00:32.000,INFO,api-gateway,prod-gw-02,req-100016,Incoming POST /v2/checkout from 10.0.44.90,12,200,usr-20080,
-2024-03-12 06:00:32.100,INFO,checkout-service,prod-chk-01,req-100016,Checkout initiated for cart-20080. 3 items. Subtotal: $189.97,100,200,usr-20080,
-2024-03-12 06:00:32.200,INFO,tax-service,prod-tax-01,req-100016,Calculating sales tax for CA-94105. Rate: 8.625%,45,200,usr-20080,
-2024-03-12 06:00:32.300,INFO,shipping-service,prod-ship-01,req-100016,Calculating shipping for 3 items to 94105. Weight: 2.3kg,60,200,usr-20080,
-2024-03-12 06:00:32.400,INFO,checkout-service,prod-chk-01,req-100016,Checkout complete. Total: $213.35 (tax: $16.38 + shipping: $7.00),10,200,usr-20080,
-2024-03-12 06:00:33.000,ERROR,api-gateway,prod-gw-01,req-100017,SSL handshake failed for downstream service product-service,5,502,usr-20090,GW_SSL_FAIL
-2024-03-12 06:00:33.010,ERROR,api-gateway,prod-gw-01,req-100017,javax.net.ssl.SSLHandshakeException: PKIX path building failed - cert expired 2024-03-11,0,502,usr-20090,GW_SSL_CERT_EXPIRED
-2024-03-12 06:00:33.500,WARN,cert-monitor,prod-gw-01,req-system,Certificate for product-service.internal expired 18 hours ago,0,,system,CERT_EXPIRED_WARN
-2024-03-12 06:00:33.510,WARN,cert-monitor,prod-gw-01,req-system,3 other certificates expiring within 7 days: search-service shipping-service tax-service,0,,system,CERT_EXPIRY_SOON
-2024-03-12 06:00:34.000,INFO,api-gateway,prod-gw-02,req-100018,Incoming POST /v2/webhooks/stripe from 54.187.205.235,5,200,,
-2024-03-12 06:00:34.100,INFO,webhook-service,prod-hook-01,req-100018,Received Stripe webhook: payment_intent.succeeded,30,200,,
-2024-03-12 06:00:34.200,INFO,webhook-service,prod-hook-01,req-100018,Webhook signature verified. Processing event evt_1abc2def,10,200,,
-2024-03-12 06:00:35.000,INFO,api-gateway,prod-gw-01,req-100019,Incoming GET /v2/analytics/dashboard from 10.0.44.100,8,200,usr-admin-01,
-2024-03-12 06:00:35.100,INFO,analytics-service,prod-analytics-01,req-100019,Loading dashboard metrics for admin,200,200,usr-admin-01,
-2024-03-12 06:00:35.400,WARN,analytics-service,prod-analytics-01,req-100019,ClickHouse query took 1200ms - above 500ms threshold,1200,,usr-admin-01,ANALYTICS_SLOW
-2024-03-12 06:00:36.000,INFO,api-gateway,prod-gw-02,req-100020,Incoming POST /v2/messages/send from 10.0.44.110,10,200,usr-20100,
-2024-03-12 06:00:36.100,INFO,messaging-service,prod-msg-01,req-100020,Queuing message to Kafka topic: user-messages,15,202,usr-20100,
-2024-03-12 06:00:36.200,INFO,messaging-service,prod-msg-01,req-100020,Message published to partition 7. Offset: 1842930,5,200,usr-20100,
-2024-03-12 06:00:37.000,ERROR,kafka-monitor,prod-kafka-01,req-system,Consumer group order-processors lag: 45000 messages behind,0,,system,KAFKA_LAG_HIGH
-2024-03-12 06:00:37.010,WARN,kafka-monitor,prod-kafka-01,req-system,Consumer group order-processors throughput dropped 60% in last 5 min,0,,system,KAFKA_THROUGHPUT_DROP
-2024-03-12 06:00:37.020,ERROR,kafka-monitor,prod-kafka-01,req-system,Broker kafka-broker-03 disk usage at 94% - approaching capacity,0,,system,KAFKA_DISK_FULL
-2024-03-12 06:00:38.000,INFO,api-gateway,prod-gw-02,req-100021,Incoming GET /v2/subscriptions/usr-20001 from 10.0.44.12,8,200,usr-20001,
-2024-03-12 06:00:38.100,INFO,billing-service,prod-bill-01,req-100021,Subscription lookup: usr-20001 - Plan: Enterprise. Status: Active,40,200,usr-20001,
-2024-03-12 06:00:39.000,INFO,api-gateway,prod-gw-02,req-100022,Incoming POST /v2/invoices/generate from 10.0.44.120,10,200,usr-20110,
-2024-03-12 06:00:39.100,INFO,invoice-service,prod-inv-svc-01,req-100022,Generating invoice INV-2024-8821 for usr-20110,300,200,usr-20110,
-2024-03-12 06:00:39.500,INFO,pdf-service,prod-pdf-01,req-100022,Rendering invoice PDF. Template: standard_v3,800,200,usr-20110,
-2024-03-12 06:00:40.500,INFO,email-service,prod-email-01,req-100022,Sending invoice email to usr-20110@company.com via SendGrid,350,200,usr-20110,
-2024-03-12 06:00:41.000,CRITICAL,security-service,prod-sec-01,req-system,ALERT: Anomalous traffic pattern detected - 15x normal rate from CIDR 198.51.100.0/24,0,,system,SEC_ANOMALY_TRAFFIC
-2024-03-12 06:00:41.010,CRITICAL,security-service,prod-sec-01,req-system,DDoS signature match: SYN flood pattern on port 443,0,,system,SEC_DDOS_SYN
-2024-03-12 06:00:41.020,INFO,security-service,prod-sec-01,req-system,Activating Cloudflare Under Attack mode,100,,system,SEC_CF_UAM
-2024-03-12 06:00:41.030,INFO,security-service,prod-sec-01,req-system,WAF rule applied: blocking 198.51.100.0/24 for 60 minutes,50,,system,SEC_WAF_BLOCK
-2024-03-12 06:00:41.500,WARN,nginx-ingress,edge-lb-01,req-system,Incoming request rate dropped from 15000/s to 2000/s after WAF block,0,,system,LB_RATE_DROP
-2024-03-12 06:00:42.000,INFO,api-gateway,prod-gw-01,req-100023,Incoming GET /v2/inventory/warehouse/WH-01 from 10.0.44.130,10,200,usr-admin-02,
-2024-03-12 06:00:42.100,INFO,inventory-service,prod-inv-02,req-100023,Warehouse WH-01 stock levels: 1247 SKUs. Total units: 89432,250,200,usr-admin-02,
-2024-03-12 06:00:43.000,ERROR,cron-scheduler,prod-cron-01,req-system,Job 'nightly-db-backup' FAILED - target volume /mnt/backup full,0,500,system,CRON_BACKUP_FAIL
-2024-03-12 06:00:43.010,ERROR,cron-scheduler,prod-cron-01,req-system,Backup volume usage: 99.2%. Last successful backup: 2024-03-10 02:00:00,0,500,system,CRON_BACKUP_FULL
-2024-03-12 06:00:43.020,CRITICAL,cron-scheduler,prod-cron-01,req-system,ALERT: No successful database backup in 48 hours - data loss risk,0,,system,CRON_BACKUP_CRITICAL
-2024-03-12 06:00:44.000,INFO,api-gateway,prod-gw-02,req-100024,Incoming POST /v2/auth/token/refresh from 10.0.44.12,8,200,usr-20001,
-2024-03-12 06:00:44.100,INFO,auth-service,prod-auth-01,req-100024,Token refresh for usr-20001. New TTL=3600s,20,200,usr-20001,
-2024-03-12 06:00:45.000,INFO,api-gateway,prod-gw-01,req-100025,Incoming POST /v2/support/ticket from 10.0.44.140,12,200,usr-20120,
-2024-03-12 06:00:45.100,INFO,support-service,prod-support-01,req-100025,Ticket TKT-29001 created. Priority: HIGH. Category: billing,80,201,usr-20120,
-2024-03-12 06:00:45.200,INFO,support-service,prod-support-01,req-100025,Auto-assigned to agent support-agent-05 based on category routing,30,200,usr-20120,
-2024-03-12 06:00:46.000,ERROR,etl-pipeline,prod-etl-01,req-system,Job 'daily-user-sync' failed at extract stage,0,500,system,ETL_EXTRACT_FAIL
-2024-03-12 06:00:46.010,ERROR,etl-pipeline,prod-etl-01,req-system,Oracle source DB connection refused: ORA-12541 TNS no listener,0,500,system,ETL_ORA_CONNECT
-2024-03-12 06:00:46.020,WARN,etl-pipeline,prod-etl-01,req-system,Scheduling retry for daily-user-sync in 30 minutes,0,,system,ETL_RETRY
-2024-03-12 06:00:47.000,INFO,api-gateway,prod-gw-02,req-100026,Incoming GET /v2/config/feature-flags from 10.0.44.150,5,200,usr-20130,
-2024-03-12 06:00:47.100,INFO,config-service,prod-config-01,req-100026,Feature flags loaded. 42 flags active. LaunchDarkly sync OK,35,200,usr-20130,
-2024-03-12 06:00:48.000,INFO,api-gateway,prod-gw-01,req-100027,Incoming POST /v2/payments/refund from 10.0.44.160,10,200,usr-admin-03,
-2024-03-12 06:00:48.100,INFO,payment-service,prod-pay-01,req-100027,Processing refund for txn_7xY9mK. Amount: $49.99,100,200,usr-admin-03,
-2024-03-12 06:00:48.200,WARN,payment-service,prod-pay-01,req-100027,Circuit breaker for Stripe still OPEN. Using fallback: PayPal refund,50,,usr-admin-03,PAY_CB_FALLBACK
-2024-03-12 06:00:48.800,INFO,payment-service,prod-pay-01,req-100027,Refund processed via PayPal. PayPal ref: PP-REF-8821,600,200,usr-admin-03,
-2024-03-12 06:00:49.000,INFO,audit-service,prod-audit-01,req-100027,Audit log: REFUND $49.99 by usr-admin-03 for txn_7xY9mK,10,200,usr-admin-03,
-2024-03-12 06:00:50.000,WARN,disk-monitor,prod-search-01,req-system,Elasticsearch data disk usage at 88% on prod-search-01,0,,system,DISK_ES_HIGH
-2024-03-12 06:00:50.010,WARN,disk-monitor,prod-search-01,req-system,Elasticsearch index cleanup recommended: 45 indices older than 90 days,0,,system,DISK_ES_CLEANUP
-2024-03-12 06:00:51.000,INFO,api-gateway,prod-gw-02,req-100028,Incoming POST /v2/exports/csv from 10.0.44.170,10,200,usr-20140,
-2024-03-12 06:00:51.100,INFO,export-service,prod-export-01,req-100028,CSV export started: transactions last 90 days for usr-20140,50,,usr-20140,
-2024-03-12 06:00:51.200,WARN,export-service,prod-export-01,req-100028,Large export: 1.2M rows estimated. Switching to async mode,100,,usr-20140,EXPORT_ASYNC
-2024-03-12 06:00:51.300,INFO,export-service,prod-export-01,req-100028,Export job queued. Job ID: exp-7821. ETA: 3 minutes,10,202,usr-20140,
-2024-03-12 06:00:52.000,ERROR,api-gateway,prod-gw-01,req-100029,Request rate limit exceeded for IP 10.0.44.200,0,429,usr-20150,GW_RATE_LIMIT
-2024-03-12 06:00:52.010,WARN,api-gateway,prod-gw-01,req-100029,IP 10.0.44.200 hit 500 req/min limit. Throttling for 60s,0,429,usr-20150,GW_THROTTLE
-2024-03-12 06:00:53.000,INFO,api-gateway,prod-gw-02,req-100030,Incoming POST /v2/ml/predict from 10.0.44.180,10,200,usr-20160,
-2024-03-12 06:00:53.100,INFO,ml-service,prod-ml-01,req-100030,Loading fraud detection model v2.8. GPU: Tesla T4,200,,usr-20160,
-2024-03-12 06:00:53.400,INFO,ml-service,prod-ml-01,req-100030,Inference complete. Fraud score: 0.02 (low risk),300,200,usr-20160,
-2024-03-12 06:00:54.000,ERROR,ml-service,prod-ml-02,req-100031,GPU memory exhausted during batch inference. CUDA OOM,0,500,system,ML_GPU_OOM
-2024-03-12 06:00:54.010,ERROR,ml-service,prod-ml-02,req-100031,torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.4GB. GPU 0 has 512MB free,0,500,system,ML_GPU_OOM
-2024-03-12 06:00:54.020,WARN,ml-service,prod-ml-02,req-100031,Falling back to CPU inference. Expected 10x slower,0,,system,ML_CPU_FALLBACK
-2024-03-12 06:00:55.000,INFO,api-gateway,prod-gw-01,req-100032,Incoming GET /v2/audit/logs?range=24h from 10.0.44.100,8,200,usr-admin-01,
-2024-03-12 06:00:55.100,INFO,audit-service,prod-audit-01,req-100032,Fetching audit logs: last 24h. Entries: 12847,500,200,usr-admin-01,
-2024-03-12 06:00:56.000,CRITICAL,health-monitor,k8s-ctrl-01,req-system,Service mesh: 3 pods in CrashLoopBackOff: prod-rpt-01 prod-rpt-02 prod-rpt-03,0,,system,K8S_CRASHLOOP
-2024-03-12 06:00:56.010,CRITICAL,health-monitor,k8s-ctrl-01,req-system,reporting-service: 0/3 pods healthy. Service DEGRADED,0,,system,K8S_SVC_DEGRADED
-2024-03-12 06:00:56.020,WARN,health-monitor,k8s-ctrl-01,req-system,Attempting horizontal pod autoscaler scale-up for reporting-service,0,,system,K8S_HPA_SCALE
-2024-03-12 06:00:57.000,ERROR,api-gateway,prod-gw-02,req-100033,Upstream host not found: recommendation-engine.internal,0,503,usr-20170,GW_DNS_FAIL
-2024-03-12 06:00:57.010,ERROR,dns-monitor,prod-dns-01,req-system,CoreDNS lookup failed for recommendation-engine.internal.svc.cluster.local,0,,system,DNS_LOOKUP_FAIL
-2024-03-12 06:00:57.020,WARN,dns-monitor,prod-dns-01,req-system,CoreDNS pod memory at 95%. Possible DNS cache corruption,0,,system,DNS_MEM_HIGH
-2024-03-12 06:00:58.000,INFO,api-gateway,prod-gw-01,req-100034,Incoming POST /v2/settings/update from 10.0.44.12,8,200,usr-20001,
-2024-03-12 06:00:58.100,INFO,user-service,prod-usr-02,req-100034,User settings updated for usr-20001. Changed: notification_prefs,25,200,usr-20001,
-2024-03-12 06:00:58.200,INFO,cache-service,prod-cache-01,req-100034,Redis DEL user:settings:usr-20001 - cache invalidated,2,200,usr-20001,
-2024-03-12 06:00:59.000,ERROR,api-gateway,prod-gw-02,req-100035,Request body malformed JSON at position 892,0,400,usr-20180,GW_BAD_JSON
-2024-03-12 06:00:59.010,WARN,api-gateway,prod-gw-02,req-100035,com.fasterxml.jackson.core.JsonParseException: Unexpected end-of-input,0,400,usr-20180,GW_JSON_PARSE
-2024-03-12 06:01:00.000,INFO,api-gateway,prod-gw-01,req-100036,Incoming GET /v2/products/categories from 10.0.44.190,8,200,usr-20190,
-2024-03-12 06:01:00.100,INFO,product-service,prod-prod-02,req-100036,Category tree loaded. 8 top-level 42 sub-categories,30,200,usr-20190,
-2024-03-12 06:01:01.000,WARN,rate-limiter,prod-gw-01,req-system,Global API rate: 4200 req/s. Approaching 5000/s capacity,0,,system,RATE_GLOBAL_WARN
-2024-03-12 06:01:01.010,INFO,autoscaler,k8s-ctrl-01,req-system,Scaling api-gateway from 2 to 4 replicas based on CPU utilization (82%),0,,system,
-2024-03-12 06:01:02.000,ERROR,integration-service,prod-intg-01,req-100037,Salesforce API returned 401 Unauthorized - access token expired,2500,401,system,INTG_SF_AUTH_FAIL
-2024-03-12 06:01:02.010,WARN,integration-service,prod-intg-01,req-100037,Attempting Salesforce token refresh,500,,system,INTG_SF_TOKEN_REFRESH
-2024-03-12 06:01:02.600,INFO,integration-service,prod-intg-01,req-100037,Salesforce token refreshed. Retrying sync,100,200,system,
-2024-03-12 06:01:03.000,INFO,api-gateway,prod-gw-03,req-100038,Incoming GET /v2/dashboard from 10.0.44.200,8,200,usr-20200,
-2024-03-12 06:01:03.100,INFO,api-gateway,prod-gw-03,req-system,New replica prod-gw-03 online. Total active gateways: 3,0,,system,
-2024-03-12 06:01:04.000,CRITICAL,secret-manager,prod-vault-01,req-system,Vault seal status: SEALED. All secret access blocked,0,,system,VAULT_SEALED
-2024-03-12 06:01:04.010,CRITICAL,secret-manager,prod-vault-01,req-system,Automatic unseal failed - 2/3 unseal keys provided. Missing key from HSM-02,0,,system,VAULT_UNSEAL_FAIL
-2024-03-12 06:01:04.020,ERROR,auth-service,prod-auth-01,req-100039,Cannot retrieve JWT signing key from Vault - Vault is sealed,0,500,,AUTH_VAULT_SEALED
-2024-03-12 06:01:04.030,ERROR,auth-service,prod-auth-02,req-100039,Cannot retrieve JWT signing key from Vault - Vault is sealed,0,500,,AUTH_VAULT_SEALED
-2024-03-12 06:01:04.040,CRITICAL,auth-service,prod-auth-01,req-system,ALL authentication requests failing - Vault dependency down,0,,system,AUTH_TOTAL_OUTAGE
-2024-03-12 06:01:04.050,ERROR,api-gateway,prod-gw-01,req-100040,POST /v2/auth/login returned 500 - auth-service unavailable,0,500,usr-20210,GW_AUTH_DOWN
-2024-03-12 06:01:04.060,ERROR,api-gateway,prod-gw-02,req-100041,POST /v2/auth/login returned 500 - auth-service unavailable,0,500,usr-20220,GW_AUTH_DOWN
-2024-03-12 06:01:04.070,ERROR,api-gateway,prod-gw-03,req-100042,POST /v2/auth/login returned 500 - auth-service unavailable,0,500,usr-20230,GW_AUTH_DOWN
-2024-03-12 06:01:04.500,WARN,pagerduty-integration,prod-pd-01,req-system,P1 incident created: INC-2024-0312-001 Auth service total outage,0,,system,PD_P1_CREATED
-2024-03-12 06:01:05.000,INFO,api-gateway,prod-gw-01,req-100043,Incoming GET /v2/products/trending from 10.0.44.210,8,200,,
-2024-03-12 06:01:05.100,INFO,product-service,prod-prod-01,req-100043,Trending products loaded from cache. 20 items,15,200,,
-2024-03-12 06:01:06.000,WARN,resource-monitor,k8s-ctrl-01,req-system,Cluster CPU utilization at 79%. Node pool resize recommended,0,,system,K8S_CPU_HIGH
-2024-03-12 06:01:06.010,WARN,resource-monitor,k8s-ctrl-01,req-system,Memory utilization at 84% across 12 nodes,0,,system,K8S_MEM_HIGH
-2024-03-12 06:01:06.020,INFO,autoscaler,k8s-ctrl-01,req-system,Requesting 2 new nodes from GKE node pool,0,,system,K8S_NODE_SCALE
-2024-03-12 06:01:07.000,ERROR,cdn-service,edge-cdn-01,req-system,Origin pull failed for /static/js/bundle.min.js - origin returned 503,500,503,system,CDN_ORIGIN_FAIL
-2024-03-12 06:01:07.010,WARN,cdn-service,edge-cdn-01,req-system,Serving stale cached version of bundle.min.js (age: 4h),0,,system,CDN_STALE_SERVE
-2024-03-12 06:01:08.000,INFO,api-gateway,prod-gw-02,req-100044,Incoming POST /v2/feedback/submit from 10.0.44.220,10,200,usr-20240,
-2024-03-12 06:01:08.100,INFO,feedback-service,prod-fb-01,req-100044,Feedback submitted. Rating: 2/5. Category: performance,25,201,usr-20240,
-2024-03-12 06:01:09.000,WARN,sla-monitor,prod-sla-01,req-system,API p99 latency at 4200ms. SLA threshold: 3000ms. SLA BREACH,0,,system,SLA_LATENCY_BREACH
-2024-03-12 06:01:09.010,WARN,sla-monitor,prod-sla-01,req-system,Error rate at 8.2%. SLA threshold: 5%. SLA BREACH,0,,system,SLA_ERROR_BREACH
-2024-03-12 06:01:09.020,CRITICAL,sla-monitor,prod-sla-01,req-system,Multiple SLA breaches detected. Availability: 94.1% (target: 99.9%),0,,system,SLA_AVAIL_CRIT
-2024-03-12 06:01:10.000,INFO,deployment-service,k8s-ctrl-01,req-system,Canary deployment started: product-service v2.14.1 -> v2.14.2,0,,system,
-2024-03-12 06:01:10.500,WARN,deployment-service,k8s-ctrl-01,req-system,Canary rollout paused: error rate 12% on new version (threshold 5%),0,,system,DEPLOY_CANARY_FAIL
-2024-03-12 06:01:10.510,INFO,deployment-service,k8s-ctrl-01,req-system,Auto-rollback initiated for product-service v2.14.2,0,,system,DEPLOY_ROLLBACK
-2024-03-12 06:01:11.000,INFO,deployment-service,k8s-ctrl-01,req-system,Rollback complete. product-service stable at v2.14.1,500,,system,
+timestamp,level,service,message,response_time_ms,status_code
+2024-03-12 06:00:01,INFO,api-gateway,GET /healthz 200,2,200
+2024-03-12 06:00:02,INFO,auth-service,User login successful,85,200
+2024-03-12 06:00:03,INFO,user-service,Fetched user profile,45,200
+2024-03-12 06:00:04,INFO,order-service,Order created successfully,55,201
+2024-03-12 06:00:05,INFO,payment-service,Payment processed via Stripe,800,200
+2024-03-12 06:00:06,INFO,notification-service,Order confirmation email sent,200,200
+2024-03-12 06:00:07,INFO,search-service,Search query executed,180,200
+2024-03-12 06:00:08,INFO,api-gateway,GET /healthz 200,3,200
+2024-03-12 06:00:09,INFO,cart-service,Item added to cart,35,200
+2024-03-12 06:00:10,ERROR,payment-service,Stripe API timeout after 30s,30002,504
+2024-03-12 06:00:11,ERROR,payment-service,Retry 1 failed connection refused,30001,504
+2024-03-12 06:00:12,ERROR,payment-service,Retry 2 failed connection refused,30001,504
+2024-03-12 06:00:13,CRITICAL,payment-service,Circuit breaker OPEN for Stripe,90005,504
+2024-03-12 06:00:14,ERROR,order-service,Payment failed rolling back order,500,500
+2024-03-12 06:00:15,ERROR,notification-service,Failed to send payment failure email,3500,500
+2024-03-12 06:00:16,ERROR,api-gateway,POST /v2/payments/charge returned 5   04,0,504
+2024-03-12 06:00:17,ERROR,api-gateway,POST /v2/payments/charge returned 504,0,504
+2024-03-12 06:00:18,ERROR,api-gateway,POST /v2/payments/charge returned 504,0,504
+2024-03-12 06:00:19,WARN,sla-monitor,P99 latency 4200ms breaches SLA,0,200
+2024-03-12 06:00:20,WARN,sla-monitor,Error rate 12 percent breaches 5 percent SLA,0,200
+2024-03-12 06:00:21,CRITICAL,sla-monitor,Availability dropped to 94.1 percent,0,500
+2024-03-12 06:00:22,INFO,api-gateway,GET /healthz 200,2,200
+2024-03-12 06:00:23,INFO,search-service,Search query executed,150,200
+2024-03-12 06:00:24,INFO,user-service,Fetched user profile,40,200

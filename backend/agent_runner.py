@@ -18,6 +18,8 @@ load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 async def run_agent_stream(logs_path: str, docs_path: str = None):
     """Run the smolagent and yield SSE events for each step."""
+    # Absolute path for the report so it always lands in the project root output/
+    report_path = Path(__file__).resolve().parent.parent / "output" / "incident_report.txt"
 
     hf_token = os.getenv("HF_TOKEN")
     model_id = os.getenv("HF_MODEL_ID", "Qwen/Qwen2.5-Coder-32B-Instruct")
@@ -36,46 +38,37 @@ async def run_agent_stream(logs_path: str, docs_path: str = None):
         model=model,
         additional_authorized_imports=[
             "pandas", "matplotlib", "seaborn", "json", "csv",
-            "os", "collections", "re",
+            "os", "collections", "re", "io",
         ],
         stream_outputs=False,
     )
 
     # Build task
     task = f"""
-    You are a Site Reliability Engineer (SRE) investigating a production outage.
+    You are an SRE engineer.You triage and analyse logs. Analyze the log file, identify issues quickly and accurately, and write an incident report.
 
-        Analyze the service logs from '{logs_path}' and identify:
-
-        1. The earliest failure event in the timeline.
-        2. The likely root cause of the incident.
-        3. Cascading failures that occurred in other services.
-        4. The services most impacted by the incident.
-        5. Any slow requests or performance anomalies.
-
-        Reconstruct the failure sequence in chronological order.
-
-        Focus on causal relationships between services rather than simply listing errors.
-
-        The incident report must include:
-
-        - Executive Summary
-        - Root Cause Analysis
-        - Failure Timeline
-        - Cascading Failures
-        - Services Impacted
-        - Recommended Immediate Actions
-        - Long-term Preventive Fixes
+    Step 1: Use the log_loader tool to load '{logs_path}'.
+    Step 2: From the output, identify the log type, detect error messages, and any failures.
+    Step 3: Extract the most relevant log entries that are related to failure.
+    Step 4: Identify the likely root cause and any cascading failures.
+    Step 5: Write an incident report covering:
+       - Executive Summary
+       - Possible Root Cause & Key Log Evidence
+       - Timeline of errors
+       - Affected Services
+       - Cascading Failures (if any)
+       - Immediate Actions
+       - Long-term Fixes
+    Step 6: Use the report_writer tool to save the report to '{report_path}'.
     """
 
     if docs_path:
         task += f"""
-    IMPORTANT — Reference Document:
-    A best practices / runbook document has been provided at: '{docs_path}'
-    6. Use the doc_reader tool to read '{docs_path}' BEFORE writing recommendations.
-    7. Base your recommendations on the practices in that document.
-    8. If the document contains fix procedures for specific error codes, include them.
+    Also: Read '{docs_path}' using the doc_reader tool and use it to improve your recommendations.
     """
+
+    # Ensure output directory exists
+    report_path.parent.mkdir(parents=True, exist_ok=True)
 
     yield {"type": "step", "step": 1, "content": "Agent task prepared. Starting analysis..."}
 
